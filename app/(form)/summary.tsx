@@ -1,10 +1,20 @@
+import { useFormStore } from '@/store/formStore'
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Button, Text, View } from 'react-native'
 
 const Summary = () => {
+  const generateResult = useFormStore((state) => state.generateResult)
+
+  const handleSubmit = () => {
+    const result = generateResult()
+    console.log(result)
+  }
+
   return (
     <View>
       <Text>Summary</Text>
+      <Text>{JSON.stringify(generateResult())}</Text>
+      <Button title='Submit' onPress={handleSubmit} />
     </View>
   )
 }

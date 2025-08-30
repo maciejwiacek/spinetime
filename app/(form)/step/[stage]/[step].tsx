@@ -1,7 +1,9 @@
+import PainChoiceStep from '@/components/PainChoiceStep'
 import VideoStep from '@/components/VideoStep'
+import WheelStep from '@/components/WheelStep'
 import { globalStyles } from '@/constants/globalStyles'
 import { useFormSpec } from '@/contexts/FormSpecContext'
-import { TVideoStep } from '@/types/StepTypes'
+import { TPainChoiceStep, TVideoStep, TWheelStep } from '@/types/StepTypes'
 import { useLocalSearchParams } from 'expo-router'
 import React from 'react'
 import { View } from 'react-native'
@@ -17,6 +19,20 @@ const Step = () => {
       {currentStep.selectedOption === 'video_step' && (
         <VideoStep
           videoStep={currentStep as TVideoStep}
+          stage={parseInt(stage[0])}
+          step={parseInt(step[0])}
+        />
+      )}
+      {currentStep.selectedOption === 'wheel_step' && (
+        <WheelStep
+          wheelStep={currentStep as TWheelStep}
+          stage={parseInt(stage[0])}
+          step={parseInt(step[0])}
+        />
+      )}
+      {currentStep.selectedOption === 'pain_choice_step' && (
+        <PainChoiceStep
+          painStep={currentStep as TPainChoiceStep}
           stage={parseInt(stage[0])}
           step={parseInt(step[0])}
         />

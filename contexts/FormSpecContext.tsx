@@ -24,5 +24,3 @@ export const useFormSpec = (): FormSpec => {
   }
   return context
 }
-
-export default FormSpecContext

@@ -1,10 +1,10 @@
-import { COLORS } from '@/constants/COLORS'
 import { TVideoStep } from '@/types/StepTypes'
-import { AntDesign } from '@expo/vector-icons'
-import { useEvent, useEventListener } from 'expo'
+import { saveAnswer } from '@/utils/answers'
+import { useEvent } from 'expo'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
+import Header from './Header'
 import NextStepNavigator from './NextStepNavigator'
 import Title from './Title'
 interface VideoStepProps {
@@ -15,12 +15,26 @@ interface VideoStepProps {
 
 const VideoStep = ({ videoStep, stage, step }: VideoStepProps) => {
   const [aspectRatio, setAspectRatio] = useState<number | null>(null)
-  const [videoFinished, setVideoFinished] = useState(false)
   const player = useVideoPlayer(videoStep.videoUrls['en-EN'], (player) => {
     player.loop = false
   })
+  const [nextActive, setNextActive] = useState(false)
 
   const sourceLoad = useEvent(player, 'sourceLoad')
+  const { isPlaying } = useEvent(player, 'playingChange', {
+    isPlaying: player.playing,
+  })
+
+  const handleAddAnswer = () => {
+    saveAnswer({
+      selectedOption: 'video_step',
+      stage,
+      step,
+      videoWatched: true,
+      videoLang: 'en-EN',
+      videoUrl: videoStep.videoUrls['en-EN'],
+    } as const)
+  }
 
   useEffect(() => {
     if (sourceLoad?.availableVideoTracks?.length) {
@@ -29,52 +43,35 @@ const VideoStep = ({ videoStep, stage, step }: VideoStepProps) => {
     }
   }, [sourceLoad])
 
-  const { isPlaying } = useEvent(player, 'playingChange', {
-    isPlaying: player.playing,
-  })
-
-  useEventListener(player, 'playToEnd', () => {
-    setVideoFinished(true)
-  })
+  useEffect(() => {
+    if (isPlaying) {
+      setNextActive(true)
+    }
+  }, [isPlaying])
 
   return (
-    <View style={styles.container}>
-      <Title>{videoStep.description}</Title>
+    <View style={{ flex: 1 }}>
+      <Header title={`Stage ${stage + 1} - Step ${step + 1}`} />
+      <View style={styles.container}>
+        <Title>{videoStep.description}</Title>
 
-      <TouchableWithoutFeedback
-        onPress={() => (isPlaying ? player.pause() : player.play())}
-      >
+        <Image source={{ uri: videoStep.imageUrl }} style={styles.image} />
+
         <View style={{ position: 'relative' }}>
-          {!isPlaying && (
-            <View
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: [{ translateX: -37.5 }, { translateY: -37.5 }],
-                backgroundColor: 'white',
-                borderRadius: 100,
-                zIndex: 100,
-              }}
-            >
-              <AntDesign name='play' size={75} color={COLORS.dark} />
-            </View>
-          )}
           <VideoView
             style={{ width: '100%', aspectRatio: aspectRatio || 1 }}
             player={player}
             allowsFullscreen
-            nativeControls={false}
           />
         </View>
-      </TouchableWithoutFeedback>
 
-      <NextStepNavigator
-        currentStage={stage}
-        currentStep={step}
-        onNext={() => {}}
-        disabled={!videoFinished}
-      />
+        <NextStepNavigator
+          currentStage={stage}
+          currentStep={step}
+          onNext={handleAddAnswer}
+          disabled={!nextActive}
+        />
+      </View>
     </View>
   )
 }
@@ -86,5 +83,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
   },
 })

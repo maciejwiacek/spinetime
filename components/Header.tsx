@@ -15,7 +15,7 @@ const Header = ({ title }: HeaderProps) => {
         <FontAwesome6 name='arrow-left' size={24} color={COLORS.dark} />
       </TouchableOpacity>
       <Text style={styles.title}>{title.toUpperCase()}</Text>
-      <TouchableOpacity onPress={() => router.canDismiss() && router.dismiss()}>
+      <TouchableOpacity onPress={() => router.dismissTo('/')}>
         <FontAwesome6 name='x' size={24} color={COLORS.dark} />
       </TouchableOpacity>
     </View>

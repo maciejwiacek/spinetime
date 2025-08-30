@@ -24,18 +24,14 @@ const NextStepNavigator = ({
     if (onNext) {
       onNext()
     }
-    const { nextStage, nextStep } = calculateNextStep(
+    const nextRoute = calculateNextStep(
       currentStage,
       currentStep,
       stagesCount,
       stepsCount
     )
 
-    if (nextStage < 0 && nextStep < 0) {
-      router.push('/(form)/summary')
-    } else {
-      router.push(`/(form)/step/${nextStage}/${nextStep}`)
-    }
+    router.push(nextRoute)
   }
   return <Button title='Next Step' onPress={handleNext} disabled={disabled} />
 }
