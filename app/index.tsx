@@ -1,9 +1,9 @@
 import Button from '@/components/Button'
 import Title from '@/components/Title'
-import { COLORS } from '@/constants/COLORS'
+import { COLORS } from '@/constants/Colors'
 import { useFormSpec } from '@/contexts/FormSpecContext'
 import { router } from 'expo-router'
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 
 export default function Index() {
   const formSpec = useFormSpec()
@@ -12,7 +12,12 @@ export default function Index() {
       formSpec.formData.formTitle.slice(1) || 'Formularz'
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        Platform.OS === 'android' && { paddingVertical: 35 },
+      ]}
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Title>Welcome to the {title} form!</Title>
@@ -20,7 +25,10 @@ export default function Index() {
             To start the {formSpec.formData.selectedOption} program, press START
           </Text>
         </View>
-        <Button title='START' onPress={() => router.push('/(form)/step/0/0')} />
+        <Button
+          title='START'
+          onPress={() => router.replace('/(form)/step/0/0')}
+        />
       </View>
     </SafeAreaView>
   )

@@ -1,4 +1,4 @@
-import { COLORS } from '@/constants/COLORS'
+import { COLORS } from '@/constants/Colors'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 
 interface ButtonProps {

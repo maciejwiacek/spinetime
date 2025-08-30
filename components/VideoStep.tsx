@@ -3,7 +3,7 @@ import { saveAnswer } from '@/utils/answers'
 import { useEvent } from 'expo'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native'
 import Header from './Header'
 import NextStepNavigator from './NextStepNavigator'
 import Title from './Title'
@@ -14,16 +14,22 @@ interface VideoStepProps {
 }
 
 const VideoStep = ({ videoStep, stage, step }: VideoStepProps) => {
-  const [aspectRatio, setAspectRatio] = useState<number | null>(null)
+  const [nextActive, setNextActive] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
   const player = useVideoPlayer(videoStep.videoUrls['en-EN'], (player) => {
     player.loop = false
   })
-  const [nextActive, setNextActive] = useState(false)
 
-  const sourceLoad = useEvent(player, 'sourceLoad')
   const { isPlaying } = useEvent(player, 'playingChange', {
     isPlaying: player.playing,
   })
+
+  useEffect(() => {
+    if (isPlaying) {
+      setNextActive(true)
+    }
+  }, [isPlaying])
 
   const handleAddAnswer = () => {
     saveAnswer({
@@ -36,19 +42,6 @@ const VideoStep = ({ videoStep, stage, step }: VideoStepProps) => {
     } as const)
   }
 
-  useEffect(() => {
-    if (sourceLoad?.availableVideoTracks?.length) {
-      const { width, height } = sourceLoad.availableVideoTracks[0].size
-      setAspectRatio(width / height)
-    }
-  }, [sourceLoad])
-
-  useEffect(() => {
-    if (isPlaying) {
-      setNextActive(true)
-    }
-  }, [isPlaying])
-
   return (
     <View style={{ flex: 1 }}>
       <Header title={`Stage ${stage + 1} - Step ${step + 1}`} />
@@ -58,10 +51,12 @@ const VideoStep = ({ videoStep, stage, step }: VideoStepProps) => {
         <Image source={{ uri: videoStep.imageUrl }} style={styles.image} />
 
         <View style={{ position: 'relative' }}>
+          {isLoading && <ActivityIndicator />}
           <VideoView
-            style={{ width: '100%', aspectRatio: aspectRatio || 1 }}
+            style={{ width: '100%', aspectRatio: 1.68 }}
             player={player}
             allowsFullscreen
+            onFirstFrameRender={() => setIsLoading(false)}
           />
         </View>
 
