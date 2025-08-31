@@ -33,7 +33,7 @@ const WheelStep = ({ wheelStep, stage, step }: WheelStepProps) => {
       <View style={styles.container}>
         <Title>{wheelStep.buttonText}</Title>
         <View style={styles.buttonsContainer}>
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 11 }).map((_, i) => (
             <View key={i} style={styles.buttonWrapper}>
               <ChoiceButton
                 choice={i}
@@ -65,11 +65,13 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonWrapper: {
-    width: '20%',
+    width: '22%',
     aspectRatio: 1,
     marginBottom: 12,
+    alignItems: 'center',
   },
 })
