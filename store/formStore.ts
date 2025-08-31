@@ -35,7 +35,7 @@ type AnswersMap = Record<number, Record<number, FormAnswer>>
 
 type FormStore = {
   answers: AnswersMap
-  addAnswer: (answer: FormAnswer) => void // upsert
+  addAnswer: (answer: FormAnswer) => void
   clearAnswers: () => void
   generateResult: () => AnswersMap
   getAnswer: (stage: number, step: number) => FormAnswer | undefined

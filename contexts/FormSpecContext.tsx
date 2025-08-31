@@ -1,7 +1,7 @@
 import formSpec from '@/data/lumbar_painTest.json'
 import { createContext, useContext } from 'react'
 
-export type FormSpec = typeof formSpec
+type FormSpec = typeof formSpec
 
 const FormSpecContext = createContext<FormSpec | null>(null)
 
